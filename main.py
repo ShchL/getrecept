@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 import random
@@ -24,8 +24,11 @@ async def root():
     endpoint = f'{base_url}{random_recipe_id}/information'
     params = {'apiKey': api_key}
     r = requests.get(endpoint, params=params)
-    return {'info':r.json(), 'id': random_recipe_id}
-
+    if r.status_code == 200:
+        return {'info':r.json(), 'id': random_recipe_id}
+    else:
+        raise HTTPException(status_code=404, detail="No recipes found")
+        
 @app.get("/list/")
 async def get_list(q: list | None = Query()):
     recipe_list = []
