@@ -17,6 +17,7 @@ jobs:
               pytest tests/unit.py
     push_to_YC:
         runs-on: ubuntu-latest
+        needs: [tests]
         steps:
             - uses: actions/checkout@v3
             - name: Build docker image
